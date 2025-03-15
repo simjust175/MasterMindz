@@ -8,7 +8,7 @@
     :disabled="activeRow !== rowId"
     :loading="verifyingRow"
   >
-    <!-- :variant="selectedRowVariant" -->
+    <!-- Row Number -->
     <h3 class="mr-4 text-grey-lighten-1">
       {{ rowId }}
     </h3>
@@ -21,15 +21,18 @@
       @results="finishTurn"
     />
 
+    <!-- 3D Dome Buttons -->
     <v-btn
       v-for="button in 4"
       :id="`button${button}`"
       :key="button"
+      :class="{'dome-button-white': playersChoice[button] === 'white', 'dome-button-other': playersChoice[button]}"
       :color="playersChoice[button] ? playersChoice[button] : 'grey-lighten-1'"
       class="mr-1"
       icon
       @click="triggerPicker(`${button}${props.row}`)"
     />
+
     <color-picker
       :activate="triggerColorPicker"
       :index="currentButton"
@@ -43,11 +46,8 @@
 import { ref, computed } from "vue";
 
 const props = defineProps({
-  // eslint-disable-next-line vue/require-default-prop
   row: Number,
-  // eslint-disable-next-line vue/require-default-prop
   activeRow: Number,
-  // eslint-disable-next-line vue/require-default-prop
   winningColors: Array,
 });
 
@@ -78,13 +78,31 @@ const setColor = (event, index) => {
 
 const finishTurn = (event) => {
   if (event.white === 4) return emit("winner");
-  verifyingRow.value = true;
+  verifyingRow.value = 'green';
   setTimeout(() => {
     verifyingRow.value = false;
     resultsColors.value = event;
     emit("rowUpdate");
   }, 1000);
- 
 };
-
 </script>
+
+<style scoped>
+/* 🏆 3D Dome Button Effect */
+.dome-button-white {
+  /* background: linear-gradient(to bottom, #ffffff 10%, #e0e0e0 50%, #b0b0b0 100%); */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(216, 216, 216, 0.466);
+}
+.dome-button-other {
+  /* background: linear-gradient(to bottom, #ffffff 10%, #e0e0e0 50%, #b0b0b0 100%); */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.715);
+}
+
+/* Pressed Effect */
+.dome-button:active {
+  /* background: linear-gradient(to bottom, #b0b0b0 10%, #909090 50%, #606060 100%); */
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.3);
+  transform: scale(0.95);
+}
+</style>
+
