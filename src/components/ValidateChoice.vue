@@ -6,6 +6,7 @@
     class="mr-4"
     :disabled="props.missingPegs"
     :loading="loadingActive"
+    @click="checkResults()"
   />
 </template>
 
